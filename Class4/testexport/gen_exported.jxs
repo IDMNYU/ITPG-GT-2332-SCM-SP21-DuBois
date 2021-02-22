@@ -1,0 +1,167 @@
+<!--
+Cycling ’74 License for Max-Generated Code for Export
+Copyright (c) 2016 Cycling ‘74
+
+The code that Max generates automatically and that end users are 
+capable of exporting and using, and any associated documentation 
+files (the “Software”) is a work of authorship for which Cycling ’74 
+is the author and owner for copyright purposes. A license is hereby 
+granted, free of charge, to any person obtaining a copy of the 
+Software (“Licensee”) to use, copy, modify, merge, publish, and 
+distribute copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The Software is licensed to Licensee only for non-commercial use. 
+Users who wish to make commercial use of the Software must contact 
+the copyright owner to determine if a license for commercial use is 
+available, and the terms and conditions for same, which may include 
+fees or royalties. For commercial use, please send inquiries to 
+licensing@cycling74.com. The determination of whether a use is 
+commercial use or non-commercial use is based upon the use, not 
+the user. The Software may be used by individuals, institutions, 
+governments, corporations, or other business whether for-profit or 
+non-profit so long as the use itself is not a commercialization of 
+the materials or a use that generates or is intended to generate 
+income, revenue, sales or profit.
+
+The above copyright notice and this license shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-->
+<jittershader name="jit.gen.jxs">
+	<description>
+		code generated JXS file
+	</description>
+ 
+	
+	<param name="yfreq" type="float" default="1.0"  />
+	<param name="xfreq" type="float" default="1.0"  />
+	<param name="tin1" type="int" default="0" description="in1"/>
+	<param name="dim1" type="vec2" default="1. 1." />
+	<language name="glsl" version="1.0">
+		
+		<bind param="yfreq" program="fp" />
+		<bind param="xfreq" program="fp" />
+		<bind param="tin1" program="fp" />
+		<bind param="dim1" program="vp" />
+
+		<program name="vp" type="vertex">
+<![CDATA[
+ 
+uniform vec2 dim1;
+
+varying vec2 texcoord1;
+varying vec2 flip1;
+varying vec2 flip1_offset;
+varying vec2 texdim1;
+varying vec2 texcoord;
+
+
+
+
+
+void main() {
+	
+	
+	
+	texcoord = vec2(gl_MultiTexCoord0.x, 1.-gl_MultiTexCoord0.y);
+	texcoord1 = vec2(gl_TextureMatrix[0]*gl_MultiTexCoord0);
+	texdim1 = vec2(gl_TextureMatrix[0][0][0],gl_TextureMatrix[0][1][1]);
+	flip1 = texdim1/abs(texdim1);
+	flip1.y *= -1.;
+	flip1_offset = vec2(0., abs(min(flip1.y, 0.)));
+	
+	texdim1 = abs(texdim1);
+	gl_Position = ftransform();
+}
+
+
+]]>
+		</program>
+		<program name="fp" type="fragment">
+<![CDATA[
+
+#define hypot(x, y) sqrt(x*x+y*y)
+#define xor(x, y)	((!(x&&y))&&(x||y))
+#define sinh(x)		(0.5*(exp(x) - exp(-x)))
+#define cosh(x)		(0.5*(exp(x) + exp(-x)))
+#define tanh(x)		((sinh(x))/(cosh(x)))
+#define asinh(x)	(log(x) + sqrt(x*x+1.))
+#define acosh(x)	(log(x) + sqrt(x*x-1.))
+#define atanh(x)	(0.5*log((1.+x)/(1.-x)))
+#define trunc(x)	(vec4(x.r > 0. ? floor(x.r) : ceil(x.r), x.g > 0. ? floor(x.g) : ceil(x.g), x.b > 0. ? floor(x.b) : ceil(x.b), x.a > 0. ? floor(x.a) : ceil(x.a)))
+
+vec2 jit_wrap1(vec2 v) {
+	return mod(v, 1.);
+}
+
+vec2 jit_clamp1(vec2 v) {
+	return clamp(v, 0., 1.);
+}
+
+vec2 jit_mirror1(vec2 v) {
+	return 1.-abs((mod(v, 2.)-1.));
+}
+
+
+uniform float yfreq;
+uniform float xfreq;
+uniform samplerJit0 tin1;
+
+varying vec2 texcoord1;
+varying vec2 flip1;
+varying vec2 flip1_offset;
+varying vec2 texdim1;
+varying vec2 texcoord;
+
+
+
+
+
+
+
+vec4 sample_wrap_unit0(samplerJit0 tex, vec2 tc);
+vec4 sample_wrap_unit0(samplerJit0 tex, vec2 tc) {
+	return textureJit0(tex, jit_wrap1(tc*flip1)*texdim1);
+}
+
+
+
+void main() {
+	vec4 in1 = textureJit0(tin1, texcoord1);
+	vec2 norm = texcoord;
+	
+	
+	
+	
+	float swiz_284 = (norm.r);
+	float mul_290 = (swiz_284 * xfreq);
+	float mod_307 = (mod(mul_290, 1.0));
+	float floor_296 = (floor(mul_290));
+	float div_297 = (floor_296 / xfreq);
+	float swiz_283 = (norm.g);
+	float mul_293 = (swiz_283 * yfreq);
+	float mod_308 = (mod(mul_293, 1.0));
+	vec2 vec_301 = (vec2(mod_307, mod_308));
+	vec4 sample_304 = (sample_wrap_unit0(tin1, vec_301));
+	float floor_295 = (floor(mul_293));
+	float div_298 = (floor_295 / xfreq);
+	vec2 vec_294 = (vec2(div_297, div_298));
+	vec4 sample_287 = (sample_wrap_unit0(tin1, vec_294));
+	vec4 add_311 = (sample_304 + sample_287);
+	gl_FragData[0] = add_311;
+}
+
+
+]]>
+		</program>
+	</language>
+</jittershader>

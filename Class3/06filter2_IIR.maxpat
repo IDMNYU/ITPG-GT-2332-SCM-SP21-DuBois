@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 8,
+			"revision" : 10,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -39,6 +39,18 @@
 		"subpatcher_template" : "newtemplate",
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-16",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 183.0, 201.0, 98.0, 29.0 ],
+					"text" : "exportcode"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-39",
 					"maxclass" : "newobj",
@@ -233,7 +245,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 340.0, 393.0, 428.0, 187.0 ],
-					"presentation_linecount" : 9,
 					"text" : "x = ins\ny = outs\nn = now\n\n\ny(n) = (x(n)+x(n-1)) / 2 : 1st order FIR lowpass\ny(n) = (x(n)+x(n-1)...+x(n-10)) / 11 : 10th order...\n\ny(n) = (x(n)+y(n-1)) / 2 : 1st order IIR lowpass"
 				}
 
@@ -280,7 +291,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 572.0, 11.5, 244.0, 228.0 ],
+					"patching_rect" : [ 572.0, 11.5, 247.0, 228.0 ],
 					"text" : "filters:\nlowpass\nhighpass\nbandpass\nbandreject/notch\n\ncutoff frequency of a filter\nis the frequency at which the filter is reducing amplitude by 6db (or 50%)\n"
 				}
 
@@ -425,7 +436,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 1,
-							"revision" : 8,
+							"revision" : 10,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -710,6 +721,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-12", 0 ],
 					"source" : [ "obj-11", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-6", 0 ],
+					"source" : [ "obj-16", 0 ]
 				}
 
 			}

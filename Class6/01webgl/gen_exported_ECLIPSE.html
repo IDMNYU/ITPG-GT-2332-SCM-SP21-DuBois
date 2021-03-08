@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<!--
+Cycling ’74 License for Max-Generated Code for Export
+Copyright (c) 2016 Cycling ‘74
+
+The code that Max generates automatically and that end users are 
+capable of exporting and using, and any associated documentation 
+files (the “Software”) is a work of authorship for which Cycling ’74 
+is the author and owner for copyright purposes. A license is hereby 
+granted, free of charge, to any person obtaining a copy of the 
+Software (“Licensee”) to use, copy, modify, merge, publish, and 
+distribute copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The Software is licensed to Licensee only for non-commercial use. 
+Users who wish to make commercial use of the Software must contact 
+the copyright owner to determine if a license for commercial use is 
+available, and the terms and conditions for same, which may include 
+fees or royalties. For commercial use, please send inquiries to 
+licensing@cycling74.com. The determination of whether a use is 
+commercial use or non-commercial use is based upon the use, not 
+the user. The Software may be used by individuals, institutions, 
+governments, corporations, or other business whether for-profit or 
+non-profit so long as the use itself is not a commercialization of 
+the materials or a use that generates or is intended to generate 
+income, revenue, sales or profit.
+
+The above copyright notice and this license shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-->
+<html>
+  <head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>twgl.js - tiny</title>
+    <style>
+      canvas {
+          display: block;
+          width: 100vw;
+          height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+  <script id="vs" type="notjs">
+attribute vec4 position;
+attribute vec2 texcoord;
+varying vec2 v_texcoord;
+
+void main() {
+	gl_Position = position;
+	v_texcoord = texcoord;
+}
+  </script>
+  <script id="fs" type="notjs">
+
+precision mediump float;
+
+#define hypot(x, y) sqrt(x*x+y*y)
+#define xor(x, y)	((!(x&&y))&&(x||y))
+#define sinh(x)		(0.5*(exp(x) - exp(-x)))
+#define cosh(x)		(0.5*(exp(x) + exp(-x)))
+#define tanh(x)		((sinh(x))/(cosh(x)))
+#define asinh(x)	(log(x) + sqrt(x*x+1.))
+#define acosh(x)	(log(x) + sqrt(x*x-1.))
+#define atanh(x)	(0.5*log((1.+x)/(1.-x)))
+#define trunc(x)	(vec4(x.r > 0. ? floor(x.r) : ceil(x.r), x.g > 0. ? floor(x.g) : ceil(x.g), x.b > 0. ? floor(x.b) : ceil(x.b), x.a > 0. ? floor(x.a) : ceil(x.a)))
+
+vec2 jit_wrap1(vec2 v) {
+	return mod(v, 1.);
+}
+
+vec2 jit_clamp1(vec2 v) {
+	return clamp(v, 0., 1.);
+}
+
+vec2 jit_mirror1(vec2 v) {
+	return 1.-abs((mod(v, 2.)-1.));
+}
+
+uniform float yfreq;
+uniform float xfreq;
+uniform sampler2D tin1;
+
+
+varying vec2 v_texcoord;
+
+
+
+
+
+
+void main() {
+	vec4 in1 = texture2D(tin1, v_texcoord);
+	vec2 norm = v_texcoord;
+	
+	
+	
+	
+	float swiz_15 = (norm.r);
+	float mul_12 = (swiz_15 * xfreq);
+	float mod_4 = (mod(mul_12, 1.0));
+	float floor_6 = (floor(mul_12));
+	float div_11 = (floor_6 / xfreq);
+	float swiz_14 = (norm.g);
+	float mul_10 = (swiz_14 * yfreq);
+	float mod_3 = (mod(mul_10, 1.0));
+	vec2 vec_2 = (vec2(mod_4, mod_3));
+	vec4 sample_5 = (texture2D(tin1, jit_wrap1(vec_2)));
+	float floor_7 = (floor(mul_10));
+	float div_9 = (floor_7 / xfreq);
+	vec2 vec_8 = (vec2(div_11, div_9));
+	vec4 sample_13 = (texture2D(tin1, jit_wrap1(vec_8)));
+	vec4 mul_1 = (sample_5 * sample_13);
+	gl_FragColor = mul_1;
+}
+
+
+  </script>  
+  <script src="./twgl-full.min.js"></script>
+  <script>
+    "use strict";
+    const gl = document.querySelector("#c").getContext("webgl");
+    const programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
+    
+    // try to open camera device
+    let playing = false;
+    const video = document.createElement("video");
+    video.autoPlay = true;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            video.addEventListener('playing', () => {
+              playing = true;
+            });
+			try {
+			  video.srcObject = stream;
+			} catch (error) {
+			  video.src = URL.createObjectURL(stream);
+			}
+            video.play();
+        });
+    }
+
+    const arrays = {
+      position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
+      texcoord: [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0]
+    };
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+    // create empty texture for camera source
+    const camtex = twgl.createTexture(gl, { width: 1280, height: 720 });
+
+    function render(time) {
+      twgl.resizeCanvasToDisplaySize(gl.canvas);
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      if(playing) {
+	      gl.bindTexture(gl.TEXTURE_2D, camtex);
+    	  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+      }
+
+      const uniforms = {
+        tin1 : camtex,
+        yfreq : [ 1.0, ], 
+        xfreq : [ 1.0, ], 
+        
+      };
+
+      gl.useProgram(programInfo.program);
+      twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+      twgl.setUniforms(programInfo, uniforms);
+      twgl.drawBufferInfo(gl, bufferInfo);
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</html>
+

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--
+Cycling ’74 License for Max-Generated Code for Export
+Copyright (c) 2016 Cycling ‘74
+
+The code that Max generates automatically and that end users are 
+capable of exporting and using, and any associated documentation 
+files (the “Software”) is a work of authorship for which Cycling ’74 
+is the author and owner for copyright purposes. A license is hereby 
+granted, free of charge, to any person obtaining a copy of the 
+Software (“Licensee”) to use, copy, modify, merge, publish, and 
+distribute copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The Software is licensed to Licensee only for non-commercial use. 
+Users who wish to make commercial use of the Software must contact 
+the copyright owner to determine if a license for commercial use is 
+available, and the terms and conditions for same, which may include 
+fees or royalties. For commercial use, please send inquiries to 
+licensing@cycling74.com. The determination of whether a use is 
+commercial use or non-commercial use is based upon the use, not 
+the user. The Software may be used by individuals, institutions, 
+governments, corporations, or other business whether for-profit or 
+non-profit so long as the use itself is not a commercialization of 
+the materials or a use that generates or is intended to generate 
+income, revenue, sales or profit.
+
+The above copyright notice and this license shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY 
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+-->
+<html>
+  <head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>twgl.js - tiny</title>
+    <style>
+      canvas {
+          display: block;
+          width: 100vw;
+          height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+  </body>
+  <script id="vs" type="notjs">
+attribute vec4 position;
+attribute vec2 texcoord;
+varying vec2 v_texcoord;
+
+void main() {
+	gl_Position = position;
+	v_texcoord = texcoord;
+}
+  </script>
+  <script id="fs" type="notjs">
+
+precision mediump float;
+
+#define hypot(x, y) sqrt(x*x+y*y)
+#define xor(x, y)	((!(x&&y))&&(x||y))
+#define sinh(x)		(0.5*(exp(x) - exp(-x)))
+#define cosh(x)		(0.5*(exp(x) + exp(-x)))
+#define tanh(x)		((sinh(x))/(cosh(x)))
+#define asinh(x)	(log(x) + sqrt(x*x+1.))
+#define acosh(x)	(log(x) + sqrt(x*x-1.))
+#define atanh(x)	(0.5*log((1.+x)/(1.-x)))
+#define trunc(x)	(vec4(x.r > 0. ? floor(x.r) : ceil(x.r), x.g > 0. ? floor(x.g) : ceil(x.g), x.b > 0. ? floor(x.b) : ceil(x.b), x.a > 0. ? floor(x.a) : ceil(x.a)))
+
+vec2 jit_wrap1(vec2 v) {
+	return mod(v, 1.);
+}
+
+vec2 jit_clamp1(vec2 v) {
+	return clamp(v, 0., 1.);
+}
+
+vec2 jit_mirror1(vec2 v) {
+	return 1.-abs((mod(v, 2.)-1.));
+}
+
+uniform float LB;
+uniform float CC;
+uniform float RT;
+uniform float CT;
+uniform float RB;
+uniform float LT;
+uniform float RC;
+uniform float LC;
+uniform float CB;
+uniform sampler2D tin1;
+
+uniform vec2 dim;
+varying vec2 v_texcoord;
+
+
+
+
+
+
+void main() {
+	vec4 in1 = texture2D(tin1, v_texcoord);
+	vec2 norm = v_texcoord;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	vec2 expr_8 = (1.0 / dim);
+	vec2 mul_33 = (expr_8 * vec2(-1.0, 0.0));
+	vec2 add_32 = (mul_33 + norm);
+	vec4 nearest_34 = (texture2D(tin1, jit_wrap1(add_32)));
+	vec4 mul_31 = (nearest_34 * LC);
+	vec2 mul_29 = (expr_8 * vec2(1.0, 0.0));
+	vec2 add_28 = (mul_29 + norm);
+	vec4 nearest_30 = (texture2D(tin1, jit_wrap1(add_28)));
+	vec4 mul_27 = (nearest_30 * RC);
+	vec2 mul_17 = (expr_8 * vec2(1.0, 1.0));
+	vec2 add_16 = (mul_17 + norm);
+	vec4 nearest_18 = (texture2D(tin1, jit_wrap1(add_16)));
+	vec4 mul_15 = (nearest_18 * RB);
+	vec2 mul_21 = (expr_8 * vec2(-1.0, 1.0));
+	vec2 add_20 = (mul_21 + norm);
+	vec4 nearest_22 = (texture2D(tin1, jit_wrap1(add_20)));
+	vec4 mul_19 = (nearest_22 * LB);
+	vec2 mul_25 = (expr_8 * vec2(0.0, 1.0));
+	vec2 add_24 = (mul_25 + norm);
+	vec4 nearest_26 = (texture2D(tin1, jit_wrap1(add_24)));
+	vec4 mul_23 = (nearest_26 * CB);
+	vec2 mul_3 = (expr_8 * vec2(1.0, -1.0));
+	vec2 add_2 = (mul_3 + norm);
+	vec4 nearest_4 = (texture2D(tin1, jit_wrap1(add_2)));
+	vec4 mul_1 = (nearest_4 * RT);
+	vec2 mul_7 = (expr_8 * vec2(-1.0, -1.0));
+	vec2 add_6 = (mul_7 + norm);
+	vec4 nearest_10 = (texture2D(tin1, jit_wrap1(add_6)));
+	vec4 mul_5 = (nearest_10 * LT);
+	vec2 mul_13 = (expr_8 * vec2(0.0, -1.0));
+	vec2 add_12 = (mul_13 + norm);
+	vec4 nearest_14 = (texture2D(tin1, jit_wrap1(add_12)));
+	vec4 mul_11 = (nearest_14 * CT);
+	vec2 mul_37 = (expr_8 * vec2(0.0, 0.0));
+	vec2 add_36 = (mul_37 + norm);
+	vec4 nearest_38 = (texture2D(tin1, jit_wrap1(add_36)));
+	vec4 mul_35 = (nearest_38 * CC);
+	gl_FragColor = ((((((((mul_35 + mul_11) + mul_5) + mul_1) + mul_23) + mul_19) + mul_15) + mul_27) + mul_31);
+}
+
+
+  </script>  
+  <script src="./twgl-full.min.js"></script>
+  <script>
+    "use strict";
+    const gl = document.querySelector("#c").getContext("webgl");
+    const programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
+    
+    // try to open camera device
+    let playing = false;
+    const video = document.createElement("video");
+    video.autoPlay = true;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            video.addEventListener('playing', () => {
+              playing = true;
+            });
+			try {
+			  video.srcObject = stream;
+			} catch (error) {
+			  video.src = URL.createObjectURL(stream);
+			}
+            video.play();
+        });
+    }
+
+    const arrays = {
+      position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
+      texcoord: [0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0]
+    };
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+    // create empty texture for camera source
+    const camtex = twgl.createTexture(gl, { width: 1280, height: 720 });
+
+    function render(time) {
+      twgl.resizeCanvasToDisplaySize(gl.canvas);
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+      if(playing) {
+	      gl.bindTexture(gl.TEXTURE_2D, camtex);
+    	  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+      }
+
+      const uniforms = {
+        tin1 : camtex,
+        LB : [ 1.0, ], 
+        CC : [ 1.0, ], 
+        RT : [ 1.0, ], 
+        CT : [ 1.0, ], 
+        RB : [ 1.0, ], 
+        LT : [ 1.0, ], 
+        RC : [ 1.0, ], 
+        LC : [ 1.0, ], 
+        CB : [ 1.0, ], 
+        dim : [ 1, 1 ], 
+      };
+
+      gl.useProgram(programInfo.program);
+      twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+      twgl.setUniforms(programInfo, uniforms);
+      twgl.drawBufferInfo(gl, bufferInfo);
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</html>
+

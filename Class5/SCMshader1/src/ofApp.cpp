@@ -3,7 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     theShader.load("lukeBlur"); // loads shader files ('.vert' and '.frag')
-    theImage.load("img.jpg"); // image to process
+    theImage.load("cat.jpg"); // image to process
     
     // allocate memory for frame buffer objects:
     theFBO.allocate(theImage.getWidth(), theImage.getHeight());
@@ -20,6 +20,11 @@ void ofApp::draw(){
     float xf = ofMap(ofGetMouseX(), 0, ofGetWidth(), 1, 16, true);
     float yf = ofMap(ofGetMouseY(), 0, ofGetHeight(), 1, 16, true);
     
+    float onethird = ofGetWidth()/3.0;
+    float height = ofGetHeight();
+    
+    theImage.draw(0, 0, onethird, height);
+    
     theFBO.begin(); // initialize framebuffer
     theShader.begin(); // start shader
     theShader.setUniform1f("blurX", xf); // set parameter
@@ -30,19 +35,19 @@ void ofApp::draw(){
     theFBO.end(); // close out FBO
     
     ofSetColor(255, 255, 255); // 'tint' command
-    theFBO.draw(0,0); // draw FBO
+    theFBO.draw(onethird,0, onethird, height); // draw FBO
 
-//    theFBO2.begin();
-//    theShader.begin();
-//    theShader.setUniform1f("blurX", xf);
-//    theShader.setUniform1f("blurY", yf);
-//
-//    theFBO.draw(0,0);
-//    theShader.end();
-//    theFBO2.end();
-//
-//    ofSetColor(ofColor::white);
-//    theFBO2.draw(0,0);
+    theFBO2.begin();
+    theShader.begin();
+    theShader.setUniform1f("blurX", yf);
+    theShader.setUniform1f("blurY", xf);
+
+    theFBO.draw(0,0);
+    theShader.end();
+    theFBO2.end();
+
+    ofSetColor(255, 255, 255); // 'tint' command
+    theFBO2.draw(onethird*2,0, onethird, ofGetHeight());
 }
 
 //--------------------------------------------------------------

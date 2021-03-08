@@ -45,8 +45,8 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 687.0, 440.0, 98.0, 29.0 ],
-					"text" : "exportcode"
+					"patching_rect" : [ 687.0, 440.0, 150.0, 29.0 ],
+					"text" : "exportcode webgl"
 				}
 
 			}
